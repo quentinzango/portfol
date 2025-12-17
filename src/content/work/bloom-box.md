@@ -1,7 +1,7 @@
 ---
 title: Bloom Box
 publishDate: 2019-12-01 00:00:00
-img: /assets/stock-2.jpg
+img: /assets/bloom-box/1.jpg
 img_alt: A bright pink sheet of paper used to wrap flowers curves in front of rich blue background
 description: |
   We paired with a cutting-edge music API and a team of horticulturalists
@@ -10,6 +10,17 @@ tags:
   - Dev
   - Branding
   - Backend
+additionalImages:
+  - src: /assets/bloom-box/1.jpg
+    alt: Vue d'ensemble de Bloom Box
+  - src: /assets/bloom-box/2.jpg
+    alt: Interface utilisateur
+  - src: /assets/bloom-box/3.jpg
+    alt: Détails techniques
+  - src: /assets/bloom-box/4.jpg
+    alt: Exemple de playlist
+  - src: /assets/bloom-box/5.jpg
+    alt: Résultats et statistiques
 ---
 
 Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur posuere commodo venenatis. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Nam non ligula vel metus efficitur hendrerit. In hac habitasse platea dictumst. Praesent et mauris ut mi dapibus semper. Curabitur tortor justo, efficitur sit amet pretium cursus, porta eget odio. Cras ac venenatis dolor. Donec laoreet posuere malesuada. Curabitur nec mi tempor, placerat leo sit amet, tincidunt est. Quisque pellentesque venenatis magna, eget tristique nibh pulvinar in. Vestibulum vitae volutpat arcu. Aenean ut malesuada odio, sit amet pellentesque odio. Suspendisse nunc elit, blandit nec hendrerit non, aliquet at magna. Donec id leo ut nulla sagittis sodales.

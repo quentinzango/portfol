@@ -1,0 +1,279 @@
+---
+// Formulaire de contact avec validation côté client
+---
+
+<div class="contact-form-container">
+  <form 
+    action="https://formspree.io/f/quentinzango470" 
+    method="POST"
+    class="contact-form"
+    id="contactForm"
+  >
+    <div class="form-group">
+      <label for="name">Votre nom *</label>
+      <input 
+        type="text" 
+        id="name" 
+        name="name" 
+        required 
+        minlength="2"
+        class="form-input"
+      >
+      <div class="error-message" id="nameError"></div>
+    </div>
+
+    <div class="form-group">
+      <label for="email">Votre email *</label>
+      <input 
+        type="email" 
+        id="email" 
+        name="email" 
+        required
+        class="form-input"
+      >
+      <div class="error-message" id="emailError"></div>
+    </div>
+
+    <div class="form-group">
+      <label for="subject">Sujet *</label>
+      <input 
+        type="text" 
+        id="subject" 
+        name="subject" 
+        required
+        minlength="5"
+        class="form-input"
+      >
+      <div class="error-message" id="subjectError"></div>
+    </div>
+
+    <div class="form-group">
+      <label for="message">Votre message *</label>
+      <textarea 
+        id="message" 
+        name="message" 
+        rows="5" 
+        required
+        minlength="10"
+        class="form-input"
+      ></textarea>
+      <div class="error-message" id="messageError"></div>
+    </div>
+
+    <div class="form-actions">
+      <button type="submit" class="submit-button">
+        Envoyer le message
+        <span class="button-icon">→</span>
+      </button>
+    </div>
+
+    <div id="form-status" class="form-status"></div>
+  </form>
+</div>
+
+<style>
+  .contact-form-container {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 2rem;
+  }
+
+  .form-group {
+    margin-bottom: 1.5rem;
+  }
+
+  label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+    color: var(--gray-100);
+  }
+
+  .form-input {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border: 1px solid var(--gray-700);
+    border-radius: 0.375rem;
+    background-color: var(--gray-900);
+    color: var(--gray-100);
+    font-size: 1rem;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+
+  .form-input:focus {
+    outline: none;
+    border-color: var(--accent-regular);
+    box-shadow: 0 0 0 3px var(--accent-overlay);
+  }
+
+  textarea.form-input {
+    resize: vertical;
+    min-height: 120px;
+  }
+
+  .error-message {
+    color: #f87171;
+    font-size: 0.875rem;
+    margin-top: 0.25rem;
+    min-height: 1.25rem;
+  }
+
+  .form-actions {
+    margin-top: 2rem;
+    text-align: right;
+  }
+
+  .submit-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.5rem;
+    background-color: var(--accent-regular);
+    color: white;
+    border: none;
+    border-radius: 0.375rem;
+    font-weight: 500;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.2s, transform 0.1s;
+  }
+
+  .submit-button:hover {
+    background-color: var(--accent-dark);
+  }
+
+  .submit-button:active {
+    transform: translateY(1px);
+  }
+
+  .button-icon {
+    font-size: 1.25em;
+    line-height: 1;
+  }
+
+  .form-status {
+    margin-top: 1.5rem;
+    padding: 1rem;
+    border-radius: 0.375rem;
+    display: none;
+  }
+
+  .form-status.success {
+    display: block;
+    background-color: #d1fae5;
+    color: #065f46;
+  }
+
+  .form-status.error {
+    display: block;
+    background-color: #fee2e2;
+    color: #b91c1c;
+  }
+
+  @media (max-width: 640px) {
+    .contact-form-container {
+      padding: 1rem 0;
+    }
+    
+    .submit-button {
+      width: 100%;
+      justify-content: center;
+    }
+  }
+</style>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const form = document.getElementById('contactForm');
+    const status = document.getElementById('form-status');
+    
+    if (!form) return;
+    
+    // Fonction de validation
+    function validateField(field, errorId, minLength = 0) {
+      const errorElement = document.getElementById(errorId);
+      if (!field.value.trim()) {
+        errorElement.textContent = 'Ce champ est requis';
+        field.classList.add('error');
+        return false;
+      }
+      
+      if (minLength > 0 && field.value.trim().length < minLength) {
+        errorElement.textContent = `Doit contenir au moins ${minLength} caractères`;
+        field.classList.add('error');
+        return false;
+      }
+      
+      if (field.type === 'email' && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(field.value)) {
+        errorElement.textContent = 'Veuillez entrer une adresse email valide';
+        field.classList.add('error');
+        return false;
+      }
+      
+      errorElement.textContent = '';
+      field.classList.remove('error');
+      return true;
+    }
+    
+    // Validation en temps réel
+    form.addEventListener('input', (e) => {
+      const field = e.target;
+      if (field.tagName === 'INPUT' || field.tagName === 'TEXTAREA') {
+        const errorId = `${field.id}Error`;
+        const minLength = field.getAttribute('minlength') || 0;
+        validateField(field, errorId, parseInt(minLength));
+      }
+    });
+    
+    // Soumission du formulaire
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      // Valider tous les champs
+      const nameValid = validateField(form.name, 'nameError', 2);
+      const emailValid = validateField(form.email, 'emailError');
+      const subjectValid = validateField(form.subject, 'subjectError', 5);
+      const messageValid = validateField(form.message, 'messageError', 10);
+      
+      if (!nameValid || !emailValid || !subjectValid || !messageValid) {
+        return;
+      }
+      
+      // Désactiver le bouton d'envoi
+      const submitBtn = form.querySelector('button[type="submit"]');
+      submitBtn.disabled = true;
+      submitBtn.innerHTML = 'Envoi en cours...';
+      
+      try {
+        const formData = new FormData(form);
+        const response = await fetch(form.action, {
+          method: 'POST',
+          body: formData,
+          headers: {
+            'Accept': 'application/json'
+          }
+        });
+        
+        if (response.ok) {
+          // Succès
+          status.textContent = 'Votre message a été envoyé avec succès ! Je vous répondrai dès que possible.';
+          status.className = 'form-status success';
+          form.reset();
+        } else {
+          throw new Error('Erreur lors de l\'envoi du formulaire');
+        }
+      } catch (error) {
+        console.error('Erreur:', error);
+        status.textContent = 'Une erreur est survenue lors de l\'envoi du message. Veuillez réessayer plus tard ou me contacter directement à quentinzando470@gmail.com';
+        status.className = 'form-status error';
+      } finally {
+        // Réactiver le bouton d'envoi
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = 'Envoyer le message <span class="button-icon">→</span>';
+        
+        // Faire défiler jusqu'au message de statut
+        status.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+    });
+  });
+</script>

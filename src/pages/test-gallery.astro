@@ -1,0 +1,226 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout title="Test Gallery">
+  <h1>Test de la galerie</h1>
+  
+  <div class="test-gallery">
+    <div class="gallery-slides">
+      <div class="slide active">
+        <img src="/assets/duvet-genius/1.jpg" alt="Test 1" class="gallery-image">
+        <div class="image-caption">Image de test 1</div>
+      </div>
+      <div class="slide">
+        <img src="/assets/duvet-genius/2.jpg" alt="Test 2" class="gallery-image">
+        <div class="image-caption">Image de test 2</div>
+      </div>
+    </div>
+    
+    <div class="gallery-controls">
+      <button class="nav-button prev">❮</button>
+      <div class="dots">
+        <button class="dot active" data-index="0"></button>
+        <button class="dot" data-index="1"></button>
+      </div>
+      <button class="nav-button next">❯</button>
+    </div>
+  </div>
+</Layout>
+
+<style>
+  .test-gallery {
+    max-width: 800px;
+    margin: 2rem auto;
+  }
+  
+  .gallery-slides {
+    position: relative;
+    height: 500px;
+    overflow: hidden;
+    border-radius: 0.5rem;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  }
+  
+  .slide {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    transition: opacity 0.5s ease-in-out;
+  }
+  
+  .slide.active {
+    opacity: 1;
+    z-index: 1;
+  }
+  
+  .gallery-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+  
+  .image-caption {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: rgba(0, 0, 0, 0.6);
+    color: white;
+    padding: 1rem;
+    text-align: center;
+    z-index: 2;
+  }
+  
+  .gallery-controls {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 1rem;
+    gap: 1rem;
+  }
+  
+  .nav-button {
+    background: rgba(0, 0, 0, 0.5);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 1.2rem;
+    transition: all 0.3s ease;
+  }
+  
+  .nav-button:hover {
+    background: rgba(0, 0, 0, 0.8);
+    transform: scale(1.1);
+  }
+  
+  .dots {
+    display: flex;
+    gap: 0.5rem;
+  }
+  
+  .dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: #ccc;
+    border: 2px solid transparent;
+    padding: 0;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+  
+  .dot.active {
+    background: #333;
+    transform: scale(1.2);
+  }
+  
+  .dot:hover {
+    border-color: #666;
+  }
+</style>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const gallery = document.querySelector('.test-gallery');
+    if (!gallery) return;
+    
+    const slides = gallery.querySelectorAll('.slide');
+    const dots = gallery.querySelectorAll('.dot');
+    const prevBtn = gallery.querySelector('.prev');
+    const nextBtn = gallery.querySelector('.next');
+    
+    if (slides.length === 0) return;
+    
+    let currentSlide = 0;
+    let slideInterval;
+    
+    function showSlide(index) {
+      currentSlide = (index + slides.length) % slides.length;
+      
+      slides.forEach((slide, i) => {
+        slide.classList.toggle('active', i === currentSlide);
+      });
+      
+      dots.forEach((dot, i) => {
+        dot.classList.toggle('active', i === currentSlide);
+      });
+    }
+    
+    function nextSlide() {
+      showSlide(currentSlide + 1);
+    }
+    
+    function prevSlide() {
+      showSlide(currentSlide - 1);
+    }
+    
+    function startAutoSlide() {
+      stopAutoSlide();
+      slideInterval = setInterval(nextSlide, 3000);
+    }
+    
+    function stopAutoSlide() {
+      if (slideInterval) {
+        clearInterval(slideInterval);
+        slideInterval = null;
+      }
+    }
+    
+    if (prevBtn) {
+      prevBtn.addEventListener('click', () => {
+        stopAutoSlide();
+        prevSlide();
+      });
+    }
+    
+    if (nextBtn) {
+      nextBtn.addEventListener('click', () => {
+        stopAutoSlide();
+        nextSlide();
+      });
+    }
+    
+    dots.forEach((dot, index) => {
+      dot.addEventListener('click', (e) => {
+        e.preventDefault();
+        stopAutoSlide();
+        showSlide(index);
+      });
+    });
+    
+    // Démarrer avec le premier slide
+    showSlide(0);
+    
+    // Démarrer le diaporama automatique
+    if (slides.length > 1) {
+      startAutoSlide();
+      
+      gallery.addEventListener('mouseenter', stopAutoSlide);
+      gallery.addEventListener('mouseleave', () => {
+        if (!slideInterval) startAutoSlide();
+      });
+    }
+    
+    // Navigation au clavier
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowLeft') {
+        stopAutoSlide();
+        prevSlide();
+      } else if (e.key === 'ArrowRight') {
+        stopAutoSlide();
+        nextSlide();
+      }
+    });
+  });
+</script>

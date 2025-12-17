@@ -1,7 +1,7 @@
 ---
 title: Markdown Mystery Tour
 publishDate: 2020-03-02 00:00:00
-img: /assets/stock-1.jpg
+img: /assets/markdown-mystery-tour/1.jpg
 img_alt: Iridescent ripples of a bright blue and pink liquid
 description: |
   We designed a whodunnit-style game to introduce Markdown formatting. Suspense — suspicion — syntax!
@@ -9,6 +9,17 @@ tags:
   - Design
   - Dev
   - User Testing
+additionalImages:
+  - src: /assets/markdown-mystery-tour/1.jpg
+    alt: Page d'accueil du jeu
+  - src: /assets/markdown-mystery-tour/2.jpg
+    alt: Interface de l'éditeur
+  - src: /assets/markdown-mystery-tour/3.jpg
+    alt: Exemple de rendu
+  - src: /assets/markdown-mystery-tour/4.jpg
+    alt: Fonctionnalités
+  - src: /assets/markdown-mystery-tour/5.jpg
+    alt: Intégrations
 ---
 
 ## Level-two heading

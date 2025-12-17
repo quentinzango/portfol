@@ -1,0 +1,396 @@
+---
+interface Props {
+  images: Array<{ src: string; alt?: string }>;
+}
+
+const { images } = Astro.props;
+
+// S'assurer que les images sont bien reçues
+if (!images || !Array.isArray(images) || images.length === 0) {
+  console.error('Aucune image reçue dans ProjectGallery');
+}
+---
+
+<div class="project-gallery">
+  <div class="gallery-container">
+    <div class="gallery-slides">
+      {images.map((image, index) => (
+        <div class={`slide ${index === 0 ? 'active' : ''}`}>
+          <div class="slide-content">
+            <img 
+              src={image.src} 
+              alt={image.alt || ''}
+              loading={index === 0 ? 'eager' : 'lazy'}
+              decoding="async"
+              class="gallery-image"
+            />
+            {image.alt && <div class="image-caption">{image.alt}</div>}
+          </div>
+        </div>
+      ))}
+    </div>
+    
+    {images.length > 1 && (
+      <div class="gallery-controls">
+        <button class="nav-button prev" aria-label="Image précédente">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M15 18l-6-6 6-6"/>
+          </svg>
+        </button>
+        <div class="dots">
+          {images.map((_, index) => (
+            <button 
+              class={`dot ${index === 0 ? 'active' : ''}`} 
+              data-index={index}
+              aria-label={`Aller à l'image ${index + 1}`}
+            ></button>
+          ))}
+        </div>
+        <button class="nav-button next" aria-label="Image suivante">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M9 18l6-6-6-6"/>
+          </svg>
+        </button>
+      </div>
+    )}
+  </div>
+</div>
+
+<style>
+  .project-gallery {
+    --gallery-spacing: 1.5rem;
+    --gallery-controls-height: 3rem;
+    --gallery-dot-size: 0.75rem;
+    --gallery-transition-duration: 0.4s;
+    
+    position: relative;
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 var(--gallery-spacing);
+  }
+  
+  .gallery-container {
+    position: relative;
+    width: 100%;
+    overflow: hidden;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    background: var(--gray-900);
+  }
+    margin: 2rem auto;
+  }
+  
+  .gallery-slides {
+    position: relative;
+    height: 500px;
+    overflow: hidden;
+    border-radius: 0.5rem;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  }
+  
+  .slide {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    transition: opacity var(--gallery-transition-duration) ease-in-out;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--gray-0);
+  }
+  
+  .slide.active {
+    opacity: 1;
+    z-index: 1;
+  }
+  
+  .slide-content {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .gallery-image {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    background: var(--gray-0);
+  }
+  
+  .image-caption {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: rgba(0, 0, 0, 0.7);
+    color: white;
+    padding: 0.75rem 1rem;
+    text-align: center;
+    font-size: 0.9rem;
+    line-height: 1.4;
+    backdrop-filter: blur(4px);
+  }
+  
+  .gallery-controls {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 1rem;
+    height: var(--gallery-controls-height);
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 10;
+    backdrop-filter: blur(4px);
+  }
+  
+  .gallery-controls .dots {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+  }
+  
+  .gallery-controls .dot {
+    width: var(--gallery-dot-size);
+    height: var(--gallery-dot-size);
+    border-radius: 50%;
+    border: 2px solid white;
+    background: transparent;
+    padding: 0;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+  
+  .gallery-controls .dot.active {
+    background: white;
+    transform: scale(1.1);
+  }
+  
+  .gallery-controls .dot:focus-visible {
+    outline: 2px solid var(--accent-regular);
+    outline-offset: 2px;
+  }
+  
+  .nav-button {
+    background: rgba(255, 255, 255, 0.2);
+    border: none;
+    border-radius: 50%;
+    width: 2.5rem;
+    height: 2.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: white;
+    transition: all 0.2s ease;
+    padding: 0;
+  }
+  
+  .nav-button:hover {
+    background: rgba(255, 255, 255, 0.3);
+    transform: scale(1.05);
+  }
+  
+  .nav-button:focus-visible {
+    outline: 2px solid var(--accent-regular);
+    outline-offset: 2px;
+  }
+  
+  .nav-button svg {
+    width: 1.5rem;
+    height: 1.5rem;
+  }
+  
+  @media (max-width: 768px) {
+    .project-gallery {
+      --gallery-spacing: 1rem;
+      --gallery-controls-height: 2.5rem;
+    }
+    
+    .nav-button {
+      width: 2rem;
+      height: 2rem;
+    }
+    
+    .nav-button svg {
+      width: 1.25rem;
+      height: 1.25rem;
+    }
+    
+    .image-caption {
+      font-size: 0.8rem;
+      padding: 0.5rem 0.75rem;
+    }
+  }
+</style>
+
+<script is:inline>
+  // Fonction d'initialisation du slider
+  function initGallery(gallery) {
+    if (!gallery) return;
+    
+    const slides = gallery.querySelectorAll('.slide');
+    const dots = gallery.querySelectorAll('.dot');
+    const prevBtn = gallery.querySelector('.prev');
+    const nextBtn = gallery.querySelector('.next');
+    let currentIndex = 0;
+    let slideInterval;
+    const slideDuration = 5000; // 5 secondes
+
+    function showSlide(index) {
+      // Mettre à jour l'index courant
+      currentIndex = (index + slides.length) % slides.length;
+      
+      // Mettre à jour les slides
+      slides.forEach((slide, i) => {
+        if (i === currentIndex) {
+          slide.classList.add('active');
+        } else {
+          slide.classList.remove('active');
+        }
+      });
+      
+      // Mettre à jour les points de navigation
+      dots.forEach((dot, i) => {
+        if (i === currentIndex) {
+          dot.classList.add('active');
+        } else {
+          dot.classList.remove('active');
+        }
+      });
+      
+      // Réinitialiser le minuteur de défilement automatique
+      resetSlideTimer();
+    }
+    
+    function nextSlide() {
+      showSlide(currentIndex + 1);
+    }
+    
+    function prevSlide() {
+      showSlide(currentIndex - 1);
+    }
+    
+    function startSlider() {
+      if (slides.length > 1) {
+        slideInterval = setInterval(nextSlide, slideDuration);
+      }
+    }
+    
+    function stopSlider() {
+      if (slideInterval) {
+        clearInterval(slideInterval);
+      }
+    }
+    
+    function resetSlideTimer() {
+      stopSlider();
+      startSlider();
+    }
+    
+    // Gestionnaires d'événements pour les boutons
+    if (prevBtn) {
+      prevBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        prevSlide();
+      });
+    }
+    
+    if (nextBtn) {
+      nextBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        nextSlide();
+      });
+    }
+    
+    // Gestionnaires pour les points de navigation
+    dots.forEach((dot, index) => {
+      dot.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        stopSlider();
+        showSlide(index);
+        startSlider();
+      });
+    });
+    
+    // Navigation au clavier
+    gallery.addEventListener('keydown', (e) => {
+      switch (e.key) {
+        case 'ArrowLeft':
+          e.preventDefault();
+          prevSlide();
+          break;
+        case 'ArrowRight':
+          e.preventDefault();
+          nextSlide();
+          break;
+        case 'Home':
+          e.preventDefault();
+          showSlide(0);
+          break;
+        case 'End':
+          e.preventDefault();
+          showSlide(slides.length - 1);
+          break;
+      }
+    });
+    
+    // Désactiver le défilement tactile horizontal
+    gallery.addEventListener('touchmove', (e) => {
+      if (gallery.scrollWidth > gallery.clientWidth) {
+        e.preventDefault();
+      }
+    }, { passive: false });
+    
+    // Gestion du balayage tactile
+    let touchStartX = 0;
+    let touchEndX = 0;
+    
+    gallery.addEventListener('touchstart', (e) => {
+      touchStartX = e.changedTouches[0].screenX;
+    }, { passive: true });
+    
+    gallery.addEventListener('touchend', (e) => {
+      touchEndX = e.changedTouches[0].screenX;
+      const swipeThreshold = 50; // Seuil minimal de balayage en pixels
+      const swipeDiff = touchStartX - touchEndX;
+      
+      if (Math.abs(swipeDiff) > swipeThreshold) {
+        if (swipeDiff > 0) {
+          // Balayage vers la gauche - image suivante
+          nextSlide();
+        } else {
+          // Balayage vers la droite - image précédente
+          prevSlide();
+        }
+      }
+    }, { passive: true });
+    
+    // Démarrer avec la première slide
+    showSlide(0);
+    startSlider();
+    
+    // Nettoyer l'intervalle lorsque le composant est démonté
+    document.addEventListener('astro:before-preparation', stopSlider);
+    
+    // Retourner la fonction de nettoyage
+    return stopSlider;
+  }
+  
+  // Initialiser la galerie quand le DOM est chargé
+  document.addEventListener('DOMContentLoaded', () => {
+    const gallery = document.querySelector('.project-gallery');
+    initGallery(gallery);
+  });
+</script>
